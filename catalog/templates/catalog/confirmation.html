@@ -1,0 +1,45 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'catalog:index' %}">Cat Catalog</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:index' %}">Home</a>
+        </li>
+        {% if not user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:login' %}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:register' %}">Register</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <form action="{% url 'catalog:logout' %}" method="post">
+                 {% csrf_token %}
+                 <button type="submit">Logout</button>
+            </form>       
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-4">
+  <h1>Visit Scheduled</h1>
+  <p>Thank you for scheduling a visit to meet {{ cat.name }}. We have received your request and look forward to meeting you.</p>
+  <ul>
+    <li>Cat: {{ cat.name }}</li>
+    <li>Visit date: {{ visit.visit_date }}</li>
+    <li>Visit time: {{ visit.visit_time }}</li>
+    <li>Visitor name: {{ visit.full_name }}</li>
+  </ul>
+  <a href="{% url 'catalog:index' %}" class="btn btn-primary">Return to Cat Catalog</a>
+</div>
+{% endblock %}

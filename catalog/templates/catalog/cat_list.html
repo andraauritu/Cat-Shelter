@@ -1,0 +1,56 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'catalog:index' %}">Cat Catalog</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:index' %}">Home</a>
+        </li>
+        {% if not user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:login' %}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:register' %}">Register</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <form action="{% url 'catalog:logout' %}" method="post">
+                 {% csrf_token %}
+                 <button type="submit">Logout</button>
+            </form>       
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    {% if user.is_authenticated %}
+    <h1>Welcome, {{ user.username }}</h1>
+    {% endif %}
+    <h2>Cat Catalog</h2>
+    <div class="row">
+        {% for cat in cat_list %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="{{ cat.picture.url }}" class="card-img-top" alt="{{ cat.name }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'catalog:detail' cat.id %}">{{ cat.name }}</a></h5>
+                    <p class="card-text">Status: {{ cat.get_adoption_status_display }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No cats available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
